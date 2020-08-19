@@ -49,7 +49,7 @@ const ProductHunt: React.FC = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.REACT_APP_PRODUCT_HUNT_DEV_TOKEN}`,
       },
-      body: JSON.stringify({ query, variables: { first: 5 } }),
+      body: JSON.stringify({ query, variables: { first: 6 } }),
     });
 
     const queryData: ProductHuntPosts = await res.json();
@@ -64,58 +64,58 @@ const ProductHunt: React.FC = () => {
 
         {error && <p>{"An error has occurred: " + error.message}</p>}
 
-        {data &&
-          data.data.posts.edges.map((post) => {
-            const {
-              id,
-              name,
-              thumbnail,
-              url,
-              tagline,
-              votesCount,
-              commentsCount,
-            } = post.node;
+        {data && (
+          <div className="grid gap-4 grid-cols-2">
+            {data.data.posts.edges.map((post) => {
+              const {
+                id,
+                name,
+                thumbnail,
+                url,
+                tagline,
+                votesCount,
+                commentsCount,
+              } = post.node;
 
-            return (
-              <div
-                key={id}
-                className="mb-8 shadow-md rounded bg-white p-4 flex"
-              >
-                <a href={url} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src={thumbnail.url}
-                    alt={name}
-                    className="rounded-full"
-                  />
-                </a>
-                <div className="ml-6">
-                  <h3 className="font-bold text-xl mb-2">
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center"
-                    >
-                      <span>{name}</span>
+              return (
+                <div key={id} className="shadow-md rounded bg-white p-4 flex">
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={thumbnail.url}
+                      alt={name}
+                      className="rounded-full"
+                    />
+                  </a>
+                  <div className="ml-6">
+                    <h3 className="font-bold text-xl mb-2">
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center"
+                      >
+                        <span>{name}</span>
 
-                      <span className="text-sm ml-4 inline-block py-1 px-2 border border-black rounded">
-                        &#9650; {votesCount}
-                      </span>
-                    </a>
-                  </h3>
+                        <span className="text-sm ml-4 inline-block py-1 px-2 border border-black rounded">
+                          &#9650; {votesCount}
+                        </span>
+                      </a>
+                    </h3>
 
-                  <p className="mb-2">{tagline}</p>
-                  <p className="text-sm font-medium text-gray-600">
-                    <a href={url} target="_blank" rel="noopener noreferrer">
-                      {commentsCount > 1
-                        ? `${commentsCount} Comments`
-                        : `${commentsCount} Comment`}
-                    </a>
-                  </p>
+                    <p className="mb-2">{tagline}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      <a href={url} target="_blank" rel="noopener noreferrer">
+                        {commentsCount > 1
+                          ? `${commentsCount} Comments`
+                          : `${commentsCount} Comment`}
+                      </a>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
