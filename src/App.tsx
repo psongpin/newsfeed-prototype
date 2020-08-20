@@ -3,6 +3,7 @@ import React from "react";
 import "./styles/main.css";
 import ProductHunt from "./components/ProductHunt";
 import HackerNews from "./components/HackerNews";
+import DevTo from "./components/DevTo";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
         <div className="grid gap-12">
           <ProductHunt />
           <HackerNews />
+          <DevTo />
         </div>
       </div>
     </div>
