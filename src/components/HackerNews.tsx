@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "react-query";
 
 type HNPostData = {
-  url: string;
+  url?: string;
   title: string;
   score: number;
   kids?: number[];
@@ -23,22 +23,25 @@ const HNPost: React.FC<{ id: number }> = ({ id }) => {
 
   if (error) return <p>{"An error has occurred: " + error.message}</p>;
 
+  const url =
+    data && data.url ? data.url : `https://news.ycombinator.com/item?id=${id}`;
+
   return data ? (
     <div className="shadow-md rounded bg-white p-4">
       <h3 className="font-bold text-lg mb-2">
-        <a href={data.url} target="_blank" rel="noopener noreferrer">
+        <a href={url} target="_blank" rel="noopener noreferrer">
           {data.title}
         </a>
       </h3>
 
       <p className="text-sm mb-1">
         <a
-          href={data.url}
+          href={url}
           target="_blank"
           rel="noopener noreferrer"
           className="text-gray-600"
         >
-          {new URL(data.url).origin}
+          {new URL(url).origin}
         </a>
       </p>
 
