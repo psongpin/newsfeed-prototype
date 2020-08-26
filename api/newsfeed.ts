@@ -48,14 +48,40 @@ export default async (req: NowRequest, res: NowResponse) => {
 
   try {
     const endpoint = "https://dev.to/api/articles?per_page=6";
-    const res = await fetch(endpoint);
-    dev_to_data = await res.json();
+    const dev_to_response = await fetch(endpoint);
+    dev_to_data = await dev_to_response.json();
   } catch (error) {
     throw new Error(error);
   }
 
-  res.json({
+  // HackerNews
+  let hn_data = null;
+
+  try {
+    const baseEndpointUrl = "https://hacker-news.firebaseio.com/v0/";
+    const best_stories_endpoint = `${baseEndpointUrl}beststories.json`;
+    let best_stories_response = await fetch(best_stories_endpoint);
+    const dataIdsOfNewStories: number[] = await best_stories_response.json();
+    const firstSixIdsFromData = dataIdsOfNewStories.slice(0, 6);
+
+    hn_data = await Promise.all(
+      firstSixIdsFromData.map(async (id) => {
+        const story_endpoint = `${baseEndpointUrl}item/${id}.json`;
+        const story_response = await fetch(story_endpoint);
+        const dataFromRes = await story_response.json();
+
+        return JSON.stringify(dataFromRes);
+      })
+    );
+  } catch (error) {
+    throw new Error(error);
+  }
+
+  const externalData = {
     product_hunt_data: JSON.stringify(ph_data),
     dev_to_data: JSON.stringify(dev_to_data),
-  });
+    hn_data: JSON.stringify(hn_data),
+  };
+
+  res.json(externalData);
 };
