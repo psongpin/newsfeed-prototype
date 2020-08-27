@@ -86,5 +86,21 @@ export default async (req: NowRequest, res: NowResponse) => {
     hn_data: JSON.stringify(hn_data),
   };
 
+  try {
+    const airtableEndpoint =
+      "https://api.airtable.com/v0/appchq5hwjYpEo3ep/External%20Data";
+
+    fetch(airtableEndpoint, {
+      body: JSON.stringify(externalData),
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
+
   res.json(externalData);
 };
