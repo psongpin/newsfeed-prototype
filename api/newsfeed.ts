@@ -90,7 +90,7 @@ export default async (req: NowRequest, res: NowResponse) => {
     const airtableEndpoint =
       "https://api.airtable.com/v0/appchq5hwjYpEo3ep/External%20Data";
 
-    fetch(airtableEndpoint, {
+    await fetch(airtableEndpoint, {
       body: JSON.stringify(externalData),
       headers: {
         Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_TOKEN}`,
