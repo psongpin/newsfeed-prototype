@@ -60,9 +60,9 @@ export default async (req: NowRequest, res: NowResponse) => {
 
   try {
     const baseEndpointUrl = "https://hacker-news.firebaseio.com/v0/";
-    const best_stories_endpoint = `${baseEndpointUrl}beststories.json`;
-    let best_stories_response = await fetch(best_stories_endpoint);
-    const dataIdsOfNewStories: number[] = await best_stories_response.json();
+    const stories_endpoint = `${baseEndpointUrl}topstories.json`;
+    let stories_response = await fetch(stories_endpoint);
+    const dataIdsOfNewStories: number[] = await stories_response.json();
     const firstSixIdsFromData = dataIdsOfNewStories.slice(0, 6);
 
     hn_data = await Promise.all(
@@ -90,7 +90,7 @@ export default async (req: NowRequest, res: NowResponse) => {
     const airtableEndpoint =
       "https://api.airtable.com/v0/appchq5hwjYpEo3ep/External%20Data";
 
-    const response = await fetch(airtableEndpoint, {
+    await fetch(airtableEndpoint, {
       body: JSON.stringify({
         records: [
           {
@@ -104,9 +104,6 @@ export default async (req: NowRequest, res: NowResponse) => {
       },
       method: "POST",
     });
-
-    const data = await response.json();
-    console.log(data);
   } catch (error) {
     throw new Error(error);
   }
