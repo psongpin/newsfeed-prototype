@@ -79,8 +79,8 @@ export default async (req: NowRequest, res: NowResponse) => {
   }
 
   const externalData = {
-    id: moment.utc().toString(),
-    date: moment.utc().toString(),
+    id: moment.utc().toISOString(),
+    date: moment.utc().toISOString(),
     product_hunt_data: JSON.stringify(ph_data),
     dev_to_data: JSON.stringify(dev_to_data),
     hn_data: JSON.stringify(hn_data),

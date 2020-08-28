@@ -1,27 +1,8 @@
 import React from "react";
+import { ProductHuntPosts } from "../types";
 
 type Props = {
   data: string;
-};
-
-type ProductHuntPosts = {
-  data: {
-    posts: {
-      edges: {
-        node: {
-          id: string;
-          name: string;
-          tagline: string;
-          thumbnail: {
-            url: string;
-          };
-          url: string;
-          votesCount: number;
-          commentsCount: number;
-        };
-      }[];
-    };
-  };
 };
 
 const ProductHunt: React.FC<Props> = ({ data }) => {

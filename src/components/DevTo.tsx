@@ -1,15 +1,9 @@
 import React from "react";
+import { DevToData } from "../types";
 
 type Props = {
   data: string;
 };
-
-type DevToData = {
-  title: string;
-  url: string;
-  positive_reactions_count: number;
-  tag_list: string[];
-}[];
 
 const DevTo: React.FC<Props> = ({ data }) => {
   const devToData: DevToData = JSON.parse(data);
@@ -21,7 +15,7 @@ const DevTo: React.FC<Props> = ({ data }) => {
         <div className="grid gap-4 grid-cols-2">
           {devToData.map(
             ({ title, url, positive_reactions_count, tag_list }) => (
-              <div className="shadow-md rounded bg-white p-4">
+              <div key={url} className="shadow-md rounded bg-white p-4">
                 <h3 className="font-bold text-lg mb-2">
                   <a href={url} target="_blank" rel="noopener noreferrer">
                     {title}
@@ -33,7 +27,7 @@ const DevTo: React.FC<Props> = ({ data }) => {
                     &#9829; {positive_reactions_count}
                   </span>
                   {tag_list.map((tag) => (
-                    <span className="mr-2">{`#${tag}`}</span>
+                    <span key={tag} className="mr-2">{`#${tag}`}</span>
                   ))}
                 </p>
               </div>

@@ -1,14 +1,5 @@
 import React from "react";
-
-type HNPostData = {
-  url?: string;
-  title: string;
-  score: number;
-  kids?: number[];
-  id: string;
-};
-
-type HNStories = HNPostData[];
+import { HNPostData } from "../types";
 
 const HNPost: React.FC<{ post: HNPostData }> = ({ post }) => {
   const url = post.url

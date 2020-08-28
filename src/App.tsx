@@ -1,26 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "react-query";
 
 import "./styles/main.css";
 import ProductHunt from "./components/ProductHunt";
 import HackerNews from "./components/HackerNews";
 import DevTo from "./components/DevTo";
-
-type AirTableData = {
-  records: {
-    id: string;
-    createdTime: string;
-    fields: {
-      id: string;
-      date: string;
-      product_hunt_data: string;
-      dev_to_data: string;
-      hn_data: string;
-    };
-  }[];
-};
+import RecordSelect from "./components/RecordSelect";
+import { AirTableData, Record } from "./types";
 
 const App = () => {
+  const [record, setRecord] = useState<Record | null>(null);
+
   const endpoint =
     "https://api.airtable.com/v0/appchq5hwjYpEo3ep/External%20Data?view=Grid%20view";
 
@@ -41,12 +31,41 @@ const App = () => {
 
         {error && <p>{"An error has occurred: " + error.message}</p>}
 
-        {data && (
-          <div className="grid gap-12">
-            <ProductHunt data={data.records[1].fields.product_hunt_data} />
-            <HackerNews data={data.records[1].fields.hn_data} />
-            <DevTo data={data.records[1].fields.dev_to_data} />
-          </div>
+        {data && data.records.length && (
+          <>
+            <div className="mb-4">
+              <RecordSelect
+                records={data.records}
+                record={record}
+                setRecord={setRecord}
+              />
+            </div>
+
+            <div className="grid gap-12">
+              <ProductHunt
+                data={
+                  record
+                    ? record.fields.product_hunt_data
+                    : data.records[data.records.length - 1].fields
+                        .product_hunt_data
+                }
+              />
+              <HackerNews
+                data={
+                  record
+                    ? record.fields.hn_data
+                    : data.records[data.records.length - 1].fields.hn_data
+                }
+              />
+              <DevTo
+                data={
+                  record
+                    ? record.fields.dev_to_data
+                    : data.records[data.records.length - 1].fields.dev_to_data
+                }
+              />
+            </div>
+          </>
         )}
       </div>
     </div>
