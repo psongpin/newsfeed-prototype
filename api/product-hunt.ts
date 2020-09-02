@@ -8,10 +8,15 @@ type ProductHuntItem = {
   imageUrl: string;
 };
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(() => resolve(), ms));
+}
+
 export default async (req: NowRequest, res: NowResponse) => {
+  const ph_url = "https://www.producthunt.com";
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  await page.goto("https://www.producthunt.com/");
+  await page.goto(ph_url, { waitUntil: "load" });
 
   const ph_data: ProductHuntItem[] = await page.evaluate(() => {
     const data: ProductHuntItem[] = [];
@@ -27,11 +32,18 @@ export default async (req: NowRequest, res: NowResponse) => {
         imageUrl: "",
       };
       try {
-        scrapedItem.url = elem.querySelector("a")?.href || "";
-        scrapedItem.title = elem.querySelector("h3")?.innerText || "";
-        scrapedItem.description = elem.querySelector("p")?.innerText || "";
-        scrapedItem.imageUrl = elem.querySelector("img")?.src || "";
-      } catch (error) {}
+        const linkElem = elem.querySelector("a");
+        const titleElem = elem.querySelector("h3");
+        const descElem = elem.querySelector("p");
+        const imageElem = elem.querySelector("img");
+
+        scrapedItem.url = linkElem ? linkElem.href : "";
+        scrapedItem.title = titleElem ? titleElem.innerText : "";
+        scrapedItem.description = descElem ? descElem.innerText : "";
+        scrapedItem.imageUrl = imageElem ? imageElem.src : "test";
+      } catch (error) {
+        throw error;
+      }
 
       data.push(scrapedItem);
     });
