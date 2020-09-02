@@ -16,6 +16,7 @@
     "lodash": "^4.17.20",
     "moment": "^2.27.0",
     "node-fetch": "^2.6.0",
+    "puppeteer": "^5.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-query": "^2.5.14",
