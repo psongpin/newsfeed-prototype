@@ -1,5 +1,6 @@
 import { NowRequest, NowResponse } from "@vercel/node";
-import puppeteer from "puppeteer";
+import chrome from "chrome-aws-lambda";
+import puppeteer from "puppeteer-core";
 
 type ProductHuntItem = {
   url: string;
@@ -8,15 +9,16 @@ type ProductHuntItem = {
   imageUrl: string;
 };
 
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(() => resolve(), ms));
-}
-
 export default async (req: NowRequest, res: NowResponse) => {
   const ph_url = "https://www.producthunt.com";
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: chrome.args,
+    executablePath: await chrome.executablePath,
+    headless: chrome.headless,
+    defaultViewport: { ...chrome.defaultViewport, height: 3000 },
+  });
   const page = await browser.newPage();
-  await page.goto(ph_url, { waitUntil: "load" });
+  await page.goto(ph_url, { waitUntil: "networkidle0" });
 
   const ph_data: ProductHuntItem[] = await page.evaluate(() => {
     const data: ProductHuntItem[] = [];
@@ -40,7 +42,7 @@ export default async (req: NowRequest, res: NowResponse) => {
         scrapedItem.url = linkElem ? linkElem.href : "";
         scrapedItem.title = titleElem ? titleElem.innerText : "";
         scrapedItem.description = descElem ? descElem.innerText : "";
-        scrapedItem.imageUrl = imageElem ? imageElem.src : "test";
+        scrapedItem.imageUrl = imageElem ? imageElem.src : "";
       } catch (error) {
         throw error;
       }
