@@ -27,10 +27,10 @@ export default async (req: NowRequest, res: NowResponse) => {
         imageUrl: "",
       };
       try {
-        scrapedItem.url = elem.querySelector("a").href;
-        scrapedItem.title = elem.querySelector("h3").innerText;
-        scrapedItem.description = elem.querySelector("p").innerText;
-        scrapedItem.imageUrl = elem.querySelector("img").src;
+        scrapedItem.url = elem.querySelector("a")?.href || "";
+        scrapedItem.title = elem.querySelector("h3")?.innerText || "";
+        scrapedItem.description = elem.querySelector("p")?.innerText || "";
+        scrapedItem.imageUrl = elem.querySelector("img")?.src || "";
       } catch (error) {}
 
       data.push(scrapedItem);
