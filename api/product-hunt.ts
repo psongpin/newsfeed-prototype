@@ -9,6 +9,10 @@ type ProductHuntItem = {
   imageUrl: string;
 };
 
+const wait = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 export default async (req: NowRequest, res: NowResponse) => {
   const ph_url = "https://www.producthunt.com";
   const browser = await puppeteer.launch({
@@ -20,13 +24,41 @@ export default async (req: NowRequest, res: NowResponse) => {
   const page = await browser.newPage();
   await page.goto(ph_url, { waitUntil: "networkidle0" });
 
-  const ph_data: ProductHuntItem[] = await page.evaluate(() => {
-    const data: ProductHuntItem[] = [];
-    const todayPostlist = document.querySelectorAll(
-      "ul.postsList_bc712:first-of-type li:nth-child(n+1):nth-child(-n+6)"
+  await page.evaluate(() => {
+    const firstProductList = document.querySelector<HTMLUListElement>(
+      "ul.postsList_bc712"
     );
 
-    todayPostlist.forEach((elem) => {
+    if (!firstProductList) return null;
+
+    Array.from(
+      firstProductList.querySelectorAll<HTMLLIElement>(
+        "li:nth-child(n+1):nth-child(-n+6)"
+      )
+    ).map((elem) => {
+      if (elem) {
+        window.scrollTo(0, elem.getBoundingClientRect().top + 50);
+      }
+      return null;
+    });
+  });
+
+  await wait(500);
+
+  const ph_data: ProductHuntItem[] = await page.evaluate(() => {
+    const data: ProductHuntItem[] = [];
+
+    const firstProductList = document.querySelector<HTMLUListElement>(
+      "ul.postsList_bc712"
+    );
+
+    if (!firstProductList) return data;
+
+    Array.from(
+      firstProductList.querySelectorAll<HTMLLIElement>(
+        "li:nth-child(n+1):nth-child(-n+6)"
+      )
+    ).map((elem) => {
       const scrapedItem: ProductHuntItem = {
         url: "",
         title: "",
@@ -48,6 +80,7 @@ export default async (req: NowRequest, res: NowResponse) => {
       }
 
       data.push(scrapedItem);
+      return null;
     });
 
     return data;
